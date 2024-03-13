@@ -1,56 +1,46 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InputPasswordComponent } from './input-password/input-password.component';
+import { PasswordService } from './password.service';
+import { ErrorMessageComponent } from './error-message/error-message.component';
+import { PasswordStrengthIndexComponent } from './password-strength-index/password-strength-index.component';
+import { PasswordStrengthTextComponent } from './password-strength-text/password-strength-text.component';
 
 @Component({
   selector: 'app-password-check',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputPasswordComponent,
+    ErrorMessageComponent,
+    PasswordStrengthIndexComponent,
+    PasswordStrengthTextComponent,
+  ],
   templateUrl: './password-check.component.html',
-  styleUrl: './password-check.component.scss',
 })
 export class PasswordCheckComponent {
   password: string = '';
-  passwordStrenght = '';
-  errorMessage = '';
+  passwordStrenght: string = '';
+  errorMessage: string = '';
 
-  takeInformationAboutPassword(): void {
-    console.log('Your password is: ', this.password);
-  }
+  constructor(private passwordService: PasswordService) {}
 
-  ratePasswordStrenght(): void {
-    const onlyLetters = /[a-zA-Z]/.test(this.password);
-    const onlyDigits = /\d/.test(this.password);
-    const onlySymbols = /[^\w\s]/.test(this.password);
-
-    if (this.password.length === 0) {
-      this.passwordStrenght = '';
-      this.errorMessage = '';
-    } else if (this.password.length > 0 && this.password.length < 8) {
-      this.passwordStrenght = '';
-      this.errorMessage = 'Password should be at least 8 characters only';
-      return;
-    }
-
-    if (this.password === '') {
-      this.passwordStrenght = '';
-      this.errorMessage = '';
-    } else if (
-      (onlyDigits && !onlyLetters && !onlySymbols) ||
-      (onlyLetters && !onlyDigits && !onlySymbols) ||
-      (onlySymbols && !onlyLetters && !onlyDigits)
+  onPasswordChange(password: string) {
+    this.passwordStrenght = this.passwordService.checkPasswordStrength(
+      password,
+      this.passwordStrenght,
+      this.errorMessage
+    );
+    if (
+      this.passwordStrenght !== 'strong' &&
+      this.passwordStrenght !== 'medium' &&
+      this.passwordStrenght !== 'easy'
     ) {
-      this.passwordStrenght = 'easy';
-      this.errorMessage = '';
-    } else if (
-      (onlyDigits && onlyLetters && !onlySymbols) ||
-      (onlyDigits && onlySymbols && !onlyLetters) ||
-      (onlyLetters && onlySymbols && !onlyDigits)
-    ) {
-      this.passwordStrenght = 'medium';
-      this.errorMessage = '';
+      this.errorMessage = this.passwordStrenght;
+      this.passwordStrenght = '';
     } else {
-      this.passwordStrenght = 'strong';
       this.errorMessage = '';
     }
   }
