@@ -5,9 +5,9 @@ import { Component, Input } from '@angular/core';
   selector: 'app-password-strength-text',
   standalone: true,
   imports: [CommonModule],
-  template: `<div class="text-left">
+  template: `<ng-container>
     <p>Your password is: {{ passwordStrength }}</p>
-  </div>`,
+  </ng-container>`,
 })
 export class PasswordStrengthTextComponent {
   @Input() passwordStrength: string = '';

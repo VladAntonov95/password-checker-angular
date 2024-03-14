@@ -12,8 +12,8 @@ import { PasswordService } from '../password.service';
 export class InputPasswordComponent {
   @Output() passwordChange = new EventEmitter<string>();
   password: string = '';
-  passwordStrength = '';
-  errorMessage = '';
+  passwordStrength: string = '';
+  errorMessage: string = '';
 
   constructor(private passwordService: PasswordService) {}
 
